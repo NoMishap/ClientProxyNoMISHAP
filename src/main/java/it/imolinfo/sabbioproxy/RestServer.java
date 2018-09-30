@@ -72,12 +72,12 @@ public class RestServer {
 				consul = Consul.builder().withUrl("http://127.0.0.1:8500").build();
 			}
 			else
-				consul = Consul.builder().withUrl("http://13.90.89.12:8500").build();
+				consul = Consul.builder().withUrl("http://192.168.210.72:8500").build();
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			consul = Consul.builder().withUrl("http://13.90.89.12:8500").build();
+			consul = Consul.builder().withUrl("http://192.168.210.72:8500").build();
 		}
 
 	}
@@ -92,10 +92,11 @@ public class RestServer {
 	);
 
 	@GET
-	@Path("/pdfservice")
+	@Path("/pdfToText")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response convertPDF() {
 		statsd.incrementCounter("proxy_client.numero_chiamate");
+		System.out.println("ciao");
 		final long timeStart = System.currentTimeMillis();
 		long serviceInvocationAccumulator = 0L;
 
@@ -106,9 +107,11 @@ public class RestServer {
 		if (servicesList == null) {
 			services = healthClient.getHealthyServiceInstances("pdfservice").getResponse();
 			consulCache.put("servicesCache", services);
+			System.out.println(services);
 		}
 		else {
 			services = new ArrayList<ServiceHealth>(servicesList);	
+			System.out.println(services);
 		}
 		
 		if (services.size() > 0) {
