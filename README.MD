@@ -1,6 +1,10 @@
 ## Predisposizione Consul
 
 ### Avvio 
+CONSUL_IP="CONSULIP="http://192.168.210.70:8500"
+export CONSUL_IP
+java -javaagent:./elastic-apm-agent-0.7.0.jar -Delastic.apm.service.name=clietn_prova -Delastic.apm.server_urls=http://192.168.210.70:8200 -Delastic.apm.application_packages=it.imolinfo -jar ./target/SabbioProxy-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
 
 avvio in modalita dev con binding per i client sulla 0.0.0.0
 

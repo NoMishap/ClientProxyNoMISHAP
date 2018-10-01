@@ -21,14 +21,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        
+    	
         final ResourceConfig resourceConfig = new ResourceConfig(RestServer.class);
               resourceConfig.register(JacksonJsonProvider.class);
               resourceConfig.packages("org.glassfish.jersey.examples.multipart");
         // The following line is to enable GZIP when client accepts it
         try (Closeable server = SimpleContainerFactory.create(new URI("http://0.0.0.0:5555"), resourceConfig)) {
-            System.out.println("Press any key to stop the service...");
-            System.in.read();
+           while(true)
+           {
+        	   Thread.sleep(3000);;
+           }
         }
     }
     
