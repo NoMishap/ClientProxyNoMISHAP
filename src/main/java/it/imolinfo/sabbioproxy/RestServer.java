@@ -51,7 +51,7 @@ public class RestServer {
 	private static Consul consul;
 	private static String ConsulIP = (System.getenv("CONSUL_IP")==null) ? "http://127.0.0.1:8500" : System.getenv("CONSUL_IP");
 	static {
-		System.out.println(ConsulIP);
+		System.out.println("Consul IP"+ConsulIP);
 		CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
 				.withCache("consulCache",
 						CacheConfigurationBuilder
@@ -72,7 +72,6 @@ public class RestServer {
 		HealthClient healthClient = consul.healthClient();
 		List<ServiceHealth> services = null;
 		List<ServiceHealth> servicesList = consulCache.get("servicesCache");
-        System.out.println(servicesList);
 
         if (servicesList == null) {
 			services = healthClient.getHealthyServiceInstances("pdfservice").getResponse();
@@ -81,14 +80,18 @@ public class RestServer {
 		else {
 			services = new ArrayList<ServiceHealth>(servicesList);	
 		}
-		
+        System.out.println("service size"+services.size());
 		if (services.size() > 0) {
 			Collections.shuffle(services);
 			Iterator<ServiceHealth> iterator = services.iterator();
 			while (iterator.hasNext()) {
-				final ServiceHealth currentService = iterator.next();
+                System.out.println("ciao");
+                final ServiceHealth currentService = iterator.next();
+                System.out.println("ciao1:"+currentService);
 				final String serviceName = determineServiceName(currentService);
-				ServiceInvocationResult result = invokeService(currentService, serviceName, 0);
+                System.out.println("ciao2:serviceName");
+				ServiceInvocationResult result = invokeService(currentService, serviceName, 0); 
+                System.out.println("ciao3");
 				if (result.getResponse().getStatus() == Status.OK.getStatusCode()) 
 				{
 					return result.getResponse();
@@ -111,13 +114,14 @@ public class RestServer {
 			String url = service.getService().getAddress();
 			URL obj = new URL(url);
 			HttpURLConnection con;
-			
+			System.out.println("url:"+url);
+                System.out.println("a1");               			    
 			Transaction transaction = ElasticApm.startTransaction();
 			try {
 			    transaction.setName("MyController#myAction");
 			    transaction.setType(Transaction.TYPE_REQUEST);
 			    transaction.addTag("paasName", serviceName);
-			    
+                System.out.println("s2");               			    
 			    con = (HttpURLConnection) obj.openConnection();
 				con.getContent().toString();
 				try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
@@ -130,6 +134,7 @@ public class RestServer {
 			    
 			} catch (Exception e) {
 			    transaction.captureException(e);
+                System.out.println("d3");
 			    throw e;
 			} finally {
 			    transaction.end();
@@ -139,8 +144,9 @@ public class RestServer {
 
 		} catch (Exception ex) {
 
-			return new ServiceInvocationResult(Response.serverError().build(),0);
-		}
+		       System.out.println(4);    
+               return new ServiceInvocationResult(Response.serverError().build(),0);
+          	}
 	}
 
 	private String determineServiceName(final ServiceHealth service) {
