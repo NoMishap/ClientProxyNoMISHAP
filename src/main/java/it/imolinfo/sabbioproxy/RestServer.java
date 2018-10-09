@@ -72,7 +72,9 @@ public class RestServer {
 		HealthClient healthClient = consul.healthClient();
 		List<ServiceHealth> services = null;
 		List<ServiceHealth> servicesList = consulCache.get("servicesCache");
-		if (servicesList == null) {
+        System.out.println(servicesList);
+
+        if (servicesList == null) {
 			services = healthClient.getHealthyServiceInstances("pdfservice").getResponse();
 			consulCache.put("servicesCache", services);
 		}
