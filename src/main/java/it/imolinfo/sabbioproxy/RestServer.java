@@ -80,7 +80,6 @@ public class RestServer {
 		else {
 			services = new ArrayList<ServiceHealth>(servicesList);	
 		}
-        System.out.println("service size"+services.size());
 		if (services.size() > 0) {
 			Collections.shuffle(services);
 			Iterator<ServiceHealth> iterator = services.iterator();
@@ -109,15 +108,12 @@ public class RestServer {
 
 			String url = service.getService().getAddress();
 			URL obj = new URL(url);
-			HttpURLConnection con;
-			System.out.println("url:"+url);
-                System.out.println("a1");               			    
+			HttpURLConnection con;            			    
 			Transaction transaction = ElasticApm.startTransaction();
 			try {
 			    transaction.setName("MyController#myAction");
 			    transaction.setType(Transaction.TYPE_REQUEST);
-			    transaction.addTag("paasName", serviceName);
-                System.out.println("s2");               			    
+			    transaction.addTag("paasName", serviceName);             			    
 			    con = (HttpURLConnection) obj.openConnection();
 				con.getContent().toString();
 				try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
@@ -130,7 +126,6 @@ public class RestServer {
 			    
 			} catch (Exception e) {
 			    transaction.captureException(e);
-                System.out.println("d3");
 			    throw e;
 			} finally {
 			    transaction.end();
@@ -139,23 +134,18 @@ public class RestServer {
 			return new ServiceInvocationResult(Response.ok(response.toString()).build(),0);
 
 		} catch (Exception ex) {
-
-		       System.out.println(4);    
+   
                return new ServiceInvocationResult(Response.serverError().build(),0);
           	}
 	}
 
 	private String determineServiceName(final ServiceHealth service) {
+		//TODO implement malformed url exception
 		String servizioScelto = null;
-        System.out.println("service:"+service);
 		String url = service.getService().getAddress();
-        System.out.println("url:"+url);
 		StringTokenizer st = new StringTokenizer(url, "/");
 		st.nextToken();
-		//Servizio scelto is null
-        System.out.println("ciao4:"+st);
 		servizioScelto = st.nextToken();
-        System.out.println("ciao5:"+servizioScelto);
 		return servizioScelto;
 	}
 
