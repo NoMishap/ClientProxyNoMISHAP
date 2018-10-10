@@ -85,13 +85,9 @@ public class RestServer {
 			Collections.shuffle(services);
 			Iterator<ServiceHealth> iterator = services.iterator();
 			while (iterator.hasNext()) {
-                System.out.println("ciao");
                 final ServiceHealth currentService = iterator.next();
-                System.out.println("ciao1:"+currentService);
 				final String serviceName = determineServiceName(currentService);
-                System.out.println("ciao2:serviceName");
 				ServiceInvocationResult result = invokeService(currentService, serviceName, 0); 
-                System.out.println("ciao3");
 				if (result.getResponse().getStatus() == Status.OK.getStatusCode()) 
 				{
 					return result.getResponse();
@@ -151,10 +147,15 @@ public class RestServer {
 
 	private String determineServiceName(final ServiceHealth service) {
 		String servizioScelto = null;
+        System.out.println("service:"+service);
 		String url = service.getService().getAddress();
+        System.out.println("url:"+url);
 		StringTokenizer st = new StringTokenizer(url, "/");
 		st.nextToken();
+		//Servizio scelto is null
+        System.out.println("ciao4:"+st);
 		servizioScelto = st.nextToken();
+        System.out.println("ciao5:"+servizioScelto);
 		return servizioScelto;
 	}
 
